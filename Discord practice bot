@@ -1,0 +1,112 @@
+import discord
+import random
+from discord.ext import commands
+from itertools import cycle
+from datetime import datetime
+
+client = discord.Client()
+client = commands.Bot(command_prefix = '?')
+client.remove_command('help')
+
+@client.event
+async def on_ready():
+  await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game('prefix: ? || b0.0'))
+
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("Please pass in all arguments :clown: :monkey:. \nIf you need help type '?arguments'.")
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You're missing permissions :clown: :monkey:.")
+
+@client.command()
+@commands.has_permissions(administrator=True) 
+async def setup(ctx):
+  message = await ctx.send('ONLY PROCEED WITH THIS COMMAND IF IT HAS NOT BEEN RUN AND YOUR SERVER IS NEW \nTo continue react below:')
+  await message.add_reaction('\U00002705')
+
+
+
+@client.command()
+async def arguments(ctx):
+  await ctx.send(f"If you are getting this error you are missing part of your command! \n ``Example:`` \n :x: ?profile \n :white_check_mark: ?profile {ctx.message.author.mention}")
+
+@client.command()
+async def serverinfo(ctx):
+  embed = discord.Embed(timestamp=datetime.utcnow())
+  embed=discord.Embed(title=f"{ctx.guild.name}'s info:", description='. . .', color=0xFF8C00) 
+  embed.add_field(name="Name", value=f'{ctx.guild.name}', inline=True)
+  embed.add_field(name="Description", value=f'{ctx.guild.description}', inline=True)
+  embed.add_field(name="Owner", value=f'{ctx.guild.owner}', inline=True)
+  embed.add_field(name="Owner ID", value=f'{ctx.guild.owner_id}', inline=True)
+  embed.add_field(name="Members", value=f'{len(ctx.guild.members)}', inline=True)
+  embed.add_field(name="Roles", value=f'{len(ctx.guild.roles)}', inline=True)
+  embed.add_field(name="Default Role", value=f'{ctx.guild.default_role}', inline=True)
+  embed.add_field(name="Channels", value=f'{len(ctx.guild.channels)}', inline=True)
+  embed.add_field(name="Text Channels", value=f'{len(ctx.guild.text_channels)}', inline=True)
+  embed.add_field(name="Voice Channels", value=f'{len(ctx.guild.voice_channels)}', inline=True)
+  embed.add_field(name="Emojis", value=f'{len(ctx.guild.emojis)}', inline=True)
+  embed.add_field(name="Afk Channel", value=f'{ctx.guild.afk_channel}', inline=True)
+  embed.add_field(name="Afk Channel", value=f'{ctx.guild.afk_channel}', inline=True)
+  await ctx.send(embed=embed)
+  await ctx.message.add_reaction('\U00002705')
+  embed.set_footer(text="GuardX | Made by whxpp")
+
+
+
+
+@client.command()
+async def help(ctx):
+  embed = discord.Embed(timestamp=datetime.utcnow())
+  embed=discord.Embed(title="Help:", description='GuardX Help', color=0xFF8C00) 
+  embed.add_field(name="**Admin Commands:**", value='ban <user> \nkick <user>', inline=True)
+  embed.add_field(name="**Fun Commands:**", value='ask <arg> \nprofile <user>', inline=True)
+  embed.add_field(name="**Other Commands:**", value='coming soon', inline=True)
+  embed.add_field(name="Roles", value=f'{len(ctx.guild.roles)}', inline=True)
+  await ctx.send(embed=embed)
+  await ctx.message.add_reaction('\U00002705')
+  embed.set_footer(text="GuardX | Made by whxpp")
+
+@client.command()
+async def profile(ctx, user: discord.User):
+  embed = discord.Embed(timestamp=datetime.utcnow())
+  embed=discord.Embed(title=f"{user.name}'s Profile:", description=f'', color=0xFFEE00) 
+  embed.add_field(name=f"**Basic Info:**", value=f'Username: {user.name} \nNickname: {user.display_name} \nID {user.id}', inline=False)
+  embed.add_field(name=f"**Info For Nerds:**", value=f'Profile Created: {user.created_at} \nRole Color: {user.color} \nMutual Guilds: {user.mutual_guilds} \nAvatar: {user.avatar} \n({user.avatar_url})', inline=False)
+  embed.set_footer(text=f"GuardX | Made by whxpp | Sent by {ctx.message.author}")
+  await ctx.message.add_reaction('\U00002705')
+  await ctx.send(embed=embed)
+
+@client.command()
+async def info(ctx):
+  embed=discord.Embed(timestamp=datetime.utcnow())
+  embed=discord.Embed(title=f"GuardX Info:", description=f'', color=0x4DE94C) 
+  embed.add_field(name="GuardX Info:", value="GuardX is a discord modertaion bot with tons of premium features without the annoying paywall ***COUGH*** <@159985870458322944>", inline=False)
+  embed.set_footer(text=f"GuardX | Made by whxpp | Sent by {ctx.message.author}")
+  await ctx.message.add_reaction('\U00002705')
+  await ctx.send(embed=embed)
+
+@client.command()
+@commands.has_permissions(administrator=True)
+async def kick(ctx, member: discord.Member):
+  await member.kick()
+  await ctx.message.add_reaction('\U00002705')
+  await ctx.send(f"{member.name} has been kicked by {ctx.author.name}!")
+
+
+@client.command()
+@commands.has_permissions(administrator=True)
+async def ban(ctx, member: discord.Member):
+  await member.ban()
+  await ctx.message.add_reaction('\U00002705')
+  await ctx.send(f"{member.name} has been banned by {ctx.author.name}!")
+
+
+@client.command()
+async def clear(ctx, amount=10):
+  await ctx.channel.purge(limit=amount)
+  await ctx.message.add_reaction('\U00002705')
+  await ctx.send(f"**```Messages cleared: {ctx.message.author.display_name} \n By: {username}({ctx.message.author.name}) \n Id: {ctx.message.author.id}```**")
+
+client.run('ODM3NDgxMTc2MzE0NTQ0MTI4.YItLIA.SAGSv6p7wq0DvHcrKma7sksK0L0')
+
